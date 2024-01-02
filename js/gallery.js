@@ -94,3 +94,16 @@ gallery.innerHTML = galleryHtml;
             event.preventDefault();
         });
     });
+
+gallery.addEventListener("click", selectImage);
+
+
+function selectImage(event) {
+  if (event.target.nodeName !== "BUTTON") {
+    return;
+  }
+  const galleryHtml =+ `<a class="gallery-link" href="${im.original}"></a>`
+  
+  console.log(selectImage)
+ }
+ console.log(galleryHtml)
