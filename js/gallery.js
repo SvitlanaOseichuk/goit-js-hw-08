@@ -63,47 +63,61 @@ const images = [
       description: "Lighthouse Coast Sea",
     },
    ];
-//   preview — посилання на маленьку версію зображення для картки галереї
-// original — посилання на велику версію зображення для модального вікна
-// description — текстовий опис зображення, для атрибута alt малого зображення та підпису великого зображення в модалці.
-
 
 
 const gallery = document.querySelector(".gallery"); 
 
-let galleryHtml = "";
 
-images.forEach(im => {
-  galleryHtml +=  `<li class="gallery-item">
-  <a class="gallery-link" href="${im.original}">
+gallery.innerHTML = createMarkup(images)
+
+function createMarkup(images){
+  return images.map(({preview, original, description}) => `
+  <li class="gallery-item">
+  <a class="gallery-link" href="${original}">
     <img
       class="gallery-image"
-      src="${im.preview}"
-      data-source="${im.original}"
-      alt="${im.description}"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
     />
   </a>
-</li>`;
-})
+</li>`
+)
+.join ("")
+}
 
-gallery.innerHTML = galleryHtml;
 
-
-    document.querySelectorAll(".gallery-link").forEach(function (im) {
-        im.addEventListener('click', function (event) {
-            event.preventDefault();
-        });
+document.querySelectorAll(".gallery-link").forEach(function (im) {
+    im.addEventListener('click', function (event) {
+        event.preventDefault();
     });
+});
 
-gallery.addEventListener("click", selectImage);
 
+gallery.addEventListener("click", handleImageClick); 
 
-function selectImage(event) {
-  if (event.target.nodeName !== "BUTTON") {
+function handleImageClick(event) {
+  if (event.target === event.currentTarget) {
     return;
   }
-  const galleryHtml =+ `<a class="gallery-link" href="${im.original}"></a>`
-  
-  console.log(selectImage)
- }
- console.log(galleryHtml)
+
+  const originalImageSrc =  event.target.dataset.source;
+  const description =  event.target.alt;
+ 
+const instance = basicLightbox.create(`
+  <div class = "modal">
+    <img class = "divImages"
+      src="${originalImageSrc}"
+      alt="${description}"
+  />
+  </div>
+`);
+instance.show();
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape' && instance.visible()) {
+    instance.close();
+  }
+});
+
+}
