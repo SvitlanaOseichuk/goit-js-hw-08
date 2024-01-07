@@ -87,19 +87,14 @@ function createMarkup(images){
 }
 
 
-document.querySelectorAll(".gallery-link").forEach(function (im) {
-    im.addEventListener('click', function (event) {
-        event.preventDefault();
-    });
-});
-
-
 gallery.addEventListener("click", handleImageClick); 
 
 function handleImageClick(event) {
   if (event.target === event.currentTarget) {
     return;
   }
+
+  event.preventDefault();
 
   const originalImageSrc =  event.target.dataset.source;
   const description =  event.target.alt;
@@ -114,10 +109,13 @@ const instance = basicLightbox.create(`
 `);
 instance.show();
 
-document.addEventListener('keydown', function (event) {
+function closeOnEscape(event) {
   if (event.key === 'Escape' && instance.visible()) {
     instance.close();
+    document.removeEventListener("keydown", closeOnEscape);
   }
-});
+};
 
+ document.addEventListener("keydown", closeOnEscape);
 }
+
